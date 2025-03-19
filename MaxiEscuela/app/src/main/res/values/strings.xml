@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MaxiEscuela</string>
+    <string name="open">Abrir Drawer</string>
+    <string name="close">Cerrar Drawer</string>
+</resources>
