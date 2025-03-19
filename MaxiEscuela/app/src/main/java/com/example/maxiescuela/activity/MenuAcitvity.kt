@@ -19,27 +19,35 @@ class MenuAcitvity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Inicializar View Binding
         binding = ActivityMenuAcitvityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Configurar Toolbar
+
         setSupportActionBar(binding.toolbar)
 
-        // Configurar Navigation Drawer
+
         val drawerLayout = binding.drawerLayout
         val navigationView: NavigationView = binding.navView
 
-        // Configurar el botón para abrir/cerrar el menú
+
         toggle = ActionBarDrawerToggle(this, drawerLayout, binding.toolbar, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // Habilitar el botón en la barra de herramientas
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        navigationView.setNavigationItemSelectedListener { menuItem->
+            when(menuItem.itemId){
+                R.id.nav_home->loadFragment(Inicio())
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
 
-
+        if (savedInstanceState == null) {
+            loadFragment(Inicio())
+        }
     }
 
     private fun loadFragment(fragment: Fragment) {
