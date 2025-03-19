@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Handler().postDelayed({
-            startActivity(Intent(this,MenuAcitvity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
         },3000)
     }
 }
