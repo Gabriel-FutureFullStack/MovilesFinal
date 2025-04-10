@@ -99,6 +99,15 @@
                     android:textColor="@android:color/holo_blue_dark"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/textVission"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:text="Ser una instituciòn de gran nivel profesional a nivel del estado proporcionando educaciòn de calidad."
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

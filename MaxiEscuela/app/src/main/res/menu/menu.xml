@@ -9,19 +9,20 @@
 
         />
     <item
-        android:id="@+id/nav_home"
-        android:title="Alumnos"
+        android:id="@+id/nav_usuarios"
+        android:title="Usuarios"
+        android:visible="false"
 
         />
     <item
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_profesores"
         android:title="Profesores"
-
+        android:visible="false"
         />
     <item
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_asistencia"
         android:title="Asistencia"
-
+        android:visible="false"
         />
 
     <!-- Separador -->

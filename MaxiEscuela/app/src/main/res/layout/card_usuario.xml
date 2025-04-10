@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Nombre de usuario -->
+        <TextView
+            android:id="@+id/tvNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre de usuario"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="JuanP123" />
+
+        <!-- Correo electrónico -->
+        <TextView
+            android:id="@+id/tvApellidos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Correo electrónico"
+            android:textSize="16sp"
+            tools:text="juanperez@example.com" />
+
+        <!-- Rol -->
+        <TextView
+            android:id="@+id/tvRol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rol"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_blue_dark"
+            tools:text="Administrador" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/btnEditar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_edit_24"
+                android:layout_marginTop="8dp"/>
+            <ImageButton
+                android:id="@+id/btnInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_contact_page_24"
+                android:layout_marginTop="8dp"/>
+            <ImageButton
+                android:id="@+id/btnDetalles"
+                android:src="@drawable/baseline_info_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detalles"
+                android:layout_marginTop="8dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
