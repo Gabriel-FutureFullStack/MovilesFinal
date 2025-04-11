@@ -15,8 +15,8 @@
 
         />
     <item
-        android:id="@+id/nav_profesores"
-        android:title="Profesores"
+        android:id="@+id/nav_clases"
+        android:title="Clases"
         android:visible="false"
         />
     <item

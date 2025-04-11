@@ -3,29 +3,32 @@ package com.example.maxiescuela.activity
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
-import com.example.maxiescuela.R
-import com.example.maxiescuela.databinding.FragmentInformacionUsarioDialogBinding
+import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.DialogFragment
+import com.example.maxiescuela.databinding.FragmentInformacionUsarioDialogBinding
+import com.example.maxiescuela.domain.Grado
 import com.example.maxiescuela.domain.Informacion
+import com.example.maxiescuela.domain.UsuarioCompleto
 import com.example.maxiescuela.repository.ApiMaxiEscuela
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.maxiescuela.repository.RetrofitHelper
 import java.util.Calendar
 
 
-class InformacionUsarioDialogFragment : DialogFragment() {
+class InformacionUsarioDialogFragment(  private var usuarioCompleto: UsuarioCompleto? = null,private val listener: oninfoagregadaListener): DialogFragment() {
 
     // Declaración del binding
     private var _binding: FragmentInformacionUsarioDialogBinding? = null
     private val binding get() = _binding!!
     private lateinit var apiService: ApiMaxiEscuela
 
+    interface  oninfoagregadaListener{
+        fun onInfoagregada(informacion: Informacion)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,24 +36,41 @@ class InformacionUsarioDialogFragment : DialogFragment() {
     ): View? {
         // Inflar el layout usando ViewBinding
         _binding = FragmentInformacionUsarioDialogBinding.inflate(inflater, container, false)
-
+        apiService= RetrofitHelper.GetRetrofit().create(ApiMaxiEscuela::class.java)
         // Configuración de los botones y campos
         val btnGuardar = binding.btnGuardar
         val btnCancelar = binding.btnCancelar
+        usuarioCompleto?.let {
+            binding.editNombres.setText(it.nombres ?: "")
+            binding.editApPaterno.setText(it.ap_paterno ?: "")
+            binding.editApMaterno.setText(it.ap_materno ?: "")
+            binding.editDireccion.setText(it.direccion ?: "")
+            binding.editDni.setText(it.dni ?: "")
+            binding.editCelular.setText(it.celular ?: "")
+            binding.editFechaNacimiento.setText(it.fecha_nacimiento ?: "")
 
-        binding.editFechaRegistro.setOnClickListener {
-            showDatePickerDialog { year, month, day ->
-                // Aumentar 1 al mes ya que en DatePicker el mes comienza desde 0
-                val fechaSeleccionada = String.format("%04d-%02d-%02d", year, month , day)
-                binding.editFechaRegistro.setText(fechaSeleccionada)
+            if (!it.nombres.isNullOrEmpty()) {
+                binding.btnGuardar.visibility = View.GONE
             }
         }
+
         binding.editFechaNacimiento.setOnClickListener {
             showDatePickerDialog { year, month, day ->
                 val fechaSeleccionada = String.format("%04d-%02d-%02d", year, month , day)
                 binding.editFechaNacimiento.setText(fechaSeleccionada)
             }
         }
+        val grados = listOf(
+            Grado(1, "1° Secundaria"),
+            Grado(2, "2° Secundaria"),
+            Grado(3, "3° Secundaria"),
+            Grado(4, "4° Secundaria"),
+            Grado(5, "5° Secundaria")
+        )
+        val nombresGrado = grados.map { it.nombre }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, nombresGrado)
+        binding.spinnerGrado.setAdapter(adapter)
+
         btnGuardar.setOnClickListener {
             // Obtener los datos desde los campos con binding
             val nombres = binding.editNombres.text.toString()
@@ -60,8 +80,17 @@ class InformacionUsarioDialogFragment : DialogFragment() {
             val dni = binding.editDni.text.toString()
             val celular = binding.editCelular.text.toString()
             val fechaNacimiento = binding.editFechaNacimiento.text.toString()
-            val fechaRegistro = binding.editFechaRegistro.text.toString()
             val usuarioId = arguments?.getInt("usuario_id")
+            Log.e("id","id usuario:${usuarioId}")
+
+            // Obtener el grado seleccionado
+            val nombreGradoSeleccionado = binding.spinnerGrado.selectedItem.toString()
+            val gradoSeleccionado = grados.find { it.nombre == nombreGradoSeleccionado }
+
+            if (gradoSeleccionado == null) {
+                Toast.makeText(requireContext(), "Por favor, selecciona un grado válido", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             // Crear el objeto de datos a enviar
             val informacion = Informacion(
                 id_usuario = usuarioId?.toInt() ?: 0,
@@ -72,11 +101,13 @@ class InformacionUsarioDialogFragment : DialogFragment() {
                 dni = dni,
                 celular = celular,
                 fecha_nacimiento = fechaNacimiento,
-                fecha_registro = fechaRegistro
+                grado = gradoSeleccionado.id
             )
+            Log.e("Info","${informacion}")
 
             // Llamar a la función para agregar la información en la API
-            agregarInformacion(informacion)
+            listener.onInfoagregada(informacion)
+            dismiss()
         }
 
         btnCancelar.setOnClickListener {
@@ -91,32 +122,7 @@ class InformacionUsarioDialogFragment : DialogFragment() {
         _binding = null  // Limpiar el binding cuando la vista sea destruida
     }
 
-    private fun agregarInformacion(informacion: Informacion) {
-        // Usar coroutine para hacer la llamada a la API de manera asincrónica
-        // Con Retrofit, necesitas un scope adecuado para realizar esta operación
-        // Si estás usando un fragmento o actividad que tiene un ViewModel, se recomienda usar el ViewModel para hacer la llamada a la API
 
-        // Iniciar una corutina para llamar a la API
-        lifecycleScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    apiService.agregarInformacion(informacion)
-                }
-
-                if (response.isSuccessful) {
-                    // Si la respuesta es exitosa, mostrar un mensaje de éxito
-                    Toast.makeText(context, "Información agregada con éxito", Toast.LENGTH_SHORT).show()
-                    dismiss()
-                } else {
-                    // Si la respuesta falla, mostrar un mensaje de error
-                    Toast.makeText(context, "Error al agregar la información", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: Exception) {
-                // Manejar cualquier error de la red o la API
-                Toast.makeText(context, "Error en la conexión: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
     private fun showDatePickerDialog(onDateSetListener: (Int, Int, Int) -> Unit) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)

@@ -1,7 +1,7 @@
 package com.example.maxiescuela.domain
 
 data class usuarioModel(
-    var id_usuario:Int,
+    var id:Int,
     var username: String,
     var email: String,
     var contraseña: String,

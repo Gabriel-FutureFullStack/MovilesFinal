@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.example.maxiescuela.R
 import com.example.maxiescuela.domain.Rol
+import com.example.maxiescuela.domain.UsuarioCompleto
 import com.example.maxiescuela.domain.usuarioModel
 
 class AgregarUsuarioFragment(private val listener: OnusuaarioAgragadoListener) : DialogFragment() {
@@ -49,8 +50,7 @@ class AgregarUsuarioFragment(private val listener: OnusuaarioAgragadoListener) :
 
                 val rolIndex = spinnerRol.selectedItemPosition
                 val rol = roles[rolIndex].id
-
-                val nuevoAlumno = usuarioModel(id_usuario = 0, username = nombre, email = email, contraseña = contra, id_rol = rol)
+                val nuevoAlumno = usuarioModel(id = 0, username = nombre, email = email, contraseña = contra, id_rol = rol)
                 listener.onAlumnoAgregado(nuevoAlumno)
             }
             .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }

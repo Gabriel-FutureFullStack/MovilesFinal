@@ -24,7 +24,7 @@ class MenuAcitvity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
 
         // Crear el objeto de usuario con el rol correcto
-        val usuario = usuarioModel(id_usuario = 0, username = "Juan", email = "juan.perez@gmail.com", contraseña = "12345", 3)
+        val usuario = usuarioModel(id = 0, username = "Juan", email = "juan.perez@gmail.com", contraseña = "12345", 3)
 
         // Configurar menú según el rol del usuario
         configurarMenu(usuario.id_rol)
@@ -44,6 +44,7 @@ class MenuAcitvity : AppCompatActivity() {
             when(menuItem.itemId){
                 R.id.nav_home -> loadFragment(Inicio())
                 R.id.nav_usuarios -> loadFragment(UsuariosFragment())
+                R.id.nav_clases ->loadFragment(Clases())
             }
             drawerLayout.closeDrawer(GravityCompat.START)
             true
@@ -62,7 +63,7 @@ class MenuAcitvity : AppCompatActivity() {
         // Menú exclusivo para ADMIN
         menu.findItem(R.id.nav_home)?.isVisible = id == 3
         menu.findItem(R.id.nav_usuarios)?.isVisible = id == 3 || id == 2 // Admin o Profesor
-        menu.findItem(R.id.nav_profesores)?.isVisible = id == 3
+        menu.findItem(R.id.nav_clases)?.isVisible = id == 3
 
         // Menú exclusivo para ESTUDIANTE
         menu.findItem(R.id.nav_asistencia)?.isVisible = id == 1

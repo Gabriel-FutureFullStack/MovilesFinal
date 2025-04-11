@@ -1,18 +1,16 @@
 package com.example.maxiescuela.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.maxiescuela.adapter.UsuarioAdapter
 import com.example.maxiescuela.databinding.FragmentUsuariosBinding
+import com.example.maxiescuela.domain.Informacion
+import com.example.maxiescuela.domain.UsuarioCompleto
 import com.example.maxiescuela.domain.usuarioModel
 import com.example.maxiescuela.repository.ApiMaxiEscuela
 import com.example.maxiescuela.repository.RetrofitHelper
@@ -29,7 +27,7 @@ class UsuariosFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var usuarioService: ApiMaxiEscuela
-    private val listaUsuarios = mutableListOf<usuarioModel>()
+    private val listaUsuarios = mutableListOf<UsuarioCompleto>()
     private lateinit var usuarioAdapter: UsuarioAdapter
 
     override fun onCreateView(
@@ -43,23 +41,21 @@ class UsuariosFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inicializar RecyclerView
-        usuarioAdapter = UsuarioAdapter( listaUsuarios,
+        usuarioAdapter = UsuarioAdapter(listaUsuarios,
             onEditClick = { usuario ->
                 // Lógica para editar el usuario
             },
-            onInfoClick = { usuarioId ->
-                // Crear una instancia del DialogFragment
-                val dialogFragment = InformacionUsarioDialogFragment()
+            onInfoClick = { usuario ->
+                val dialogFragment = InformacionUsarioDialogFragment(usuario,
+                    object : InformacionUsarioDialogFragment.oninfoagregadaListener {
+                        override fun onInfoagregada(informacion: Informacion) {
+                            agregarInformacion(informacion)
+                        }
+                    })
 
-                // Crear un Bundle para pasar el usuarioId
                 val bundle = Bundle()
-                bundle.putInt("usuario_id", usuarioId)  // Pasas el ID del usuario al fragmento
-
-                // Asignar el Bundle al DialogFragment
+                bundle.putInt("usuario_id", usuario.id)
                 dialogFragment.arguments = bundle
-
-                // Mostrar el DialogFragment utilizando childFragmentManager
                 dialogFragment.show(childFragmentManager, "informacion_usuario_dialog")
             }
         )
@@ -69,13 +65,10 @@ class UsuariosFragment : Fragment() {
             adapter = usuarioAdapter
         }
 
-        // Inicializa Retrofit
         usuarioService = RetrofitHelper.GetRetrofit().create(ApiMaxiEscuela::class.java)
 
-        // Obtener datos de los alumnos
         obtenerusuarios()
 
-        // Mostrar el DialogFragment al hacer clic en el botón flotante
         binding.fabAgregarUsuario.setOnClickListener {
             val dialog = AgregarUsuarioFragment(object : AgregarUsuarioFragment.OnusuaarioAgragadoListener {
                 override fun onAlumnoAgregado(nuevoAlumno: usuarioModel) {
@@ -86,17 +79,20 @@ class UsuariosFragment : Fragment() {
         }
     }
 
-    private fun obtenerusuarios() {
-        binding.progressBar.visibility = View.VISIBLE // Mostrar ProgressBar
+    fun obtenerusuarios() {
+        if (_binding != null && isAdded) {
+            binding.progressBar.visibility = View.VISIBLE
+        }
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val usuarios = usuarioService.obtenerUsuarios()
 
-                // Cambiar al hilo principal para actualizar la UI
                 withContext(Dispatchers.Main) {
-                    actualizarLista(usuarios) // Actualiza la lista de usuarios en la UI
-                    binding.progressBar.visibility = View.GONE // Ocultar ProgressBar
+                    if (_binding != null && isAdded) {
+                        actualizarLista(usuarios)
+                        binding.progressBar.visibility = View.GONE
+                    }
                 }
             } catch (e: HttpException) {
                 mostrarError("Error HTTP ${e.code()}: ${e.message()}")
@@ -110,7 +106,7 @@ class UsuariosFragment : Fragment() {
         }
     }
 
-    private fun actualizarLista(nuevaLista: List<usuarioModel>) {
+    private fun actualizarLista(nuevaLista: List<UsuarioCompleto>) {
         listaUsuarios.clear()
         listaUsuarios.addAll(nuevaLista)
         usuarioAdapter.notifyDataSetChanged()
@@ -122,9 +118,10 @@ class UsuariosFragment : Fragment() {
                 val response = usuarioService.crearUsuario(nuevoAlumno)
                 if (response.isSuccessful) {
                     withContext(Dispatchers.Main) {
-                        listaUsuarios.add(nuevoAlumno)
-                        usuarioAdapter.notifyItemInserted(listaUsuarios.size - 1)
-                        Toast.makeText(requireContext(), "Alumno agregado exitosamente", Toast.LENGTH_SHORT).show()
+                        if (_binding != null && isAdded) {
+                            Toast.makeText(requireContext(), "Alumno agregado exitosamente", Toast.LENGTH_SHORT).show()
+                            obtenerusuarios()
+                        }
                     }
                 } else {
                     mostrarError("Error al agregar alumno: ${response.message()}")
@@ -135,11 +132,43 @@ class UsuariosFragment : Fragment() {
         }
     }
 
+    private fun agregarInformacion(informacion: Informacion) {
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    usuarioService.agregarInformacion(informacion)
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (_binding != null && isAdded) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(requireContext(), "Información agregada con éxito", Toast.LENGTH_SHORT).show()
+                            obtenerusuarios()
+                        } else {
+                            Toast.makeText(requireContext(), "Error al agregar la información", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    if (_binding != null && isAdded) {
+                        Toast.makeText(requireContext(), "Error en la conexión: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                    Log.e("UsuariosFragment", "Error en la conexión: ${e.message}")
+                }
+            }
+        }
+    }
+
     private suspend fun mostrarError(mensaje: String) {
         withContext(Dispatchers.Main) {
-            binding.progressBar.visibility = View.GONE
-            Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()
-            Log.e("AlumnosFragment", mensaje)
+            if (_binding != null && isAdded) {
+                binding.progressBar.visibility = View.GONE
+                Toast.makeText(requireContext(), mensaje, Toast.LENGTH_LONG).show()
+            } else {
+                Log.e("UsuariosFragment", "No se pudo mostrar el mensaje: $mensaje (fragmento destruido)")
+            }
+            Log.e("UsuariosFragment", mensaje)
         }
     }
 

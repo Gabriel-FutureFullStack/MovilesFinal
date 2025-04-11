@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Nombre de la clase -->
+        <TextView
+            android:id="@+id/tvNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre de la Clase"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Matemática - 5to B" />
+
+        <!-- Nombre del docente -->
+        <TextView
+            android:id="@+id/tvDocente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Docente"
+            android:textSize="16sp"
+            tools:text="Profa. Ana Gutiérrez" />
+
+        <!-- Hora de la clase -->
+        <TextView
+            android:id="@+id/tvHorario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Horario"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_green_dark"
+            tools:text="Lunes 8:00 AM - 9:30 AM" />
+
+        <!-- Botones de acción -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <ImageButton
+                android:id="@+id/btnEditarClase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Editar clase"
+                android:src="@drawable/baseline_edit_24"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+            <ImageButton
+                android:id="@+id/btnDetallesClase"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Detalles clase"
+                android:src="@drawable/baseline_info_24"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

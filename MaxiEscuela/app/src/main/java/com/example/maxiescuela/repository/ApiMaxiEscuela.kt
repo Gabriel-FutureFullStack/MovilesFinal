@@ -1,7 +1,9 @@
 package com.example.maxiescuela.repository
 
 import com.example.maxiescuela.domain.Asistencia
+import com.example.maxiescuela.domain.Clase
 import com.example.maxiescuela.domain.Informacion
+import com.example.maxiescuela.domain.UsuarioCompleto
 import com.example.maxiescuela.domain.usuarioModel
 import retrofit2.Response
 import retrofit2.http.Body
@@ -17,7 +19,7 @@ interface ApiMaxiEscuela{
     suspend fun crearUsuario(@Body usuario: usuarioModel): Response<usuarioModel>
 
     @GET("usuarios")
-    suspend fun obtenerUsuarios(): List<usuarioModel>
+    suspend fun obtenerUsuarios(): List<UsuarioCompleto>
 
     @GET("usuarios/{id}")
     suspend fun obtenerUsuarioPorId(@Path("id") id: Int): usuarioModel
@@ -32,6 +34,9 @@ interface ApiMaxiEscuela{
     @POST("informacion_personal")
     suspend fun agregarInformacion(@Body informacion: Informacion):Response<Informacion>
 
+    //Clases
+    @GET("clases")
+    suspend fun listarClase(): List<Clase>
 
     @POST("asistencias")
     suspend fun crearAsistencia(@Body asistencia: Asistencia): Asistencia

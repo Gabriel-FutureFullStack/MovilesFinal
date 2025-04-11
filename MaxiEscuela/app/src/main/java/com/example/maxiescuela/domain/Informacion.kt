@@ -11,5 +11,5 @@ data class Informacion(
     val dni: String,
     val celular: String,
     val fecha_nacimiento: String,
-    val fecha_registro: String
+    val grado:Int,
 )

@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:background="@drawable/background_gradient"
-    tools:context=".activity.UsuariosFragment">
+    tools:context=".activity.Clases">
 
     <!-- Título -->
     <TextView
-        android:id="@+id/tvTitulo"
+        android:id="@+id/tvTituloClases"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lista de Usuarios"
+        android:text="Lista de Clases"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -26,27 +26,27 @@
         android:layout_width="80dp"
         android:layout_height="4dp"
         android:background="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTituloClases"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView -->
+    <!-- RecyclerView para clases -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewUsuarios"
+        android:id="@+id/recyclerViewClases"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingTop="8dp"
         android:background="@android:color/transparent"
-        tools:listitem="@layout/card_usuario"
-        app:layout_constraintTop_toBottomOf="@id/tvTitulo"
+        tools:listitem="@layout/card_clase"
+        app:layout_constraintTop_toBottomOf="@id/tvTituloClases"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fabAgregarUsuario" />
+        app:layout_constraintBottom_toTopOf="@id/fabAgregarClase" />
 
     <!-- ProgressBar -->
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBarClases"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -56,18 +56,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Botón flotante para agregar usuario -->
+    <!-- Botón flotante para agregar clase -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAgregarUsuario"
+        android:id="@+id/fabAgregarClase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Agregar Usuario"
-        android:src="@drawable/ic_add_user"
+        android:contentDescription="Agregar Clase"
+        android:src="@drawable/baseline_add_24"
         app:backgroundTint="@color/primary"
         app:tint="@android:color/white"
         app:elevation="6dp"
         app:maxImageSize="56dp"
+        android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,46 +5,40 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.maxiescuela.databinding.CardUsuarioBinding
 import com.example.maxiescuela.domain.Informacion
+import com.example.maxiescuela.domain.UsuarioCompleto
 import com.example.maxiescuela.domain.usuarioModel
 
 class UsuarioAdapter(
-    private val listaUsuarios: List<usuarioModel>,
-    private val onEditClick: (usuarioModel) -> Unit,
-    private val onInfoClick: (Int) -> Unit,  // Recibe un String (ID del usuario)
+    private val listaUsuarios: List<UsuarioCompleto>,
+    private val onEditClick: (UsuarioCompleto) -> Unit,
+    private val onInfoClick: (UsuarioCompleto) -> Unit,  // Recibe un String (ID del usuario)
 ) : RecyclerView.Adapter<UsuarioAdapter.UsuarioViewHolder>() {
 
     // ViewHolder para manejar los elementos de la lista
     class UsuarioViewHolder(private val binding: CardUsuarioBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(
-            usuario: usuarioModel,
-            onEditClick: (usuarioModel) -> Unit,
-            onInfoClick: (Int) -> Unit,
+            usuario: UsuarioCompleto,
+            onEditClick: (UsuarioCompleto) -> Unit,
+            onInfoClick: (UsuarioCompleto) -> Unit,
 
         ) {
             binding.tvNombre.text = usuario.username
             binding.tvApellidos.text = usuario.email
             // Validamos si el rol es null
-            binding.tvRol.text = obtenerNombreRol(usuario.id_rol)
+            binding.tvRol.text = usuario.nombre_rol
 
             // Manejar clic en editar
             binding.btnEditar.setOnClickListener { onEditClick(usuario) }
 
             // Manejar clic en info (más detalles)
             binding.btnInfo.setOnClickListener {
-                onInfoClick(usuario.id_usuario)  // Aquí pasamos el ID del usuario
+                onInfoClick(usuario)  // Aquí pasamos el ID del usuario
             }
 
 
         }
 
-        private fun obtenerNombreRol(idRol: Int): String {
-            return when (idRol) {
-                1 -> "Estudiante"
-                2 -> "Profesor"
-                3 -> "Administrador"
-                else -> "Desconocido"
-            }
-        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsuarioViewHolder {

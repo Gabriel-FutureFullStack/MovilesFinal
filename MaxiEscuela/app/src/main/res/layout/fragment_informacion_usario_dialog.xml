@@ -115,22 +115,23 @@
                 android:focusable="false"
                 android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Fecha de Registro -->
+        <!-- Grado -->
         <com.google.android.material.textfield.TextInputLayout
-            android:hint="Fecha de Registro"
+            android:id="@+id/textInputGrado"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="Grado"
             android:layout_marginTop="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editFechaRegistro"
+
+            <Spinner
+                android:id="@+id/spinnerGrado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="none"
                 android:focusable="false"
-                android:inputType="date" />
+                android:clickable="true"/>
         </com.google.android.material.textfield.TextInputLayout>
-
         <!-- Botón Guardar -->
         <Button
             android:id="@+id/btnGuardar"
