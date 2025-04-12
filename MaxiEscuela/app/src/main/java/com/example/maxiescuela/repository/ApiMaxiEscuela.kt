@@ -3,6 +3,7 @@ package com.example.maxiescuela.repository
 import com.example.maxiescuela.domain.Asistencia
 import com.example.maxiescuela.domain.Clase
 import com.example.maxiescuela.domain.Informacion
+import com.example.maxiescuela.domain.LoginRequest
 import com.example.maxiescuela.domain.UsuarioCompleto
 import com.example.maxiescuela.domain.usuarioModel
 import retrofit2.Response
